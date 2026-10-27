@@ -2044,6 +2044,30 @@ async def on_command_error(
         )
         return
 
+    # Em comando híbrido, a falha de conversão do slash chega embrulhada em
+    # HybridCommandError; o motivo de verdade está em `.original`. Sem isso o
+    # usuário só via "Deu erro" sem saber o que ele digitou errado.
+    original = getattr(erro, "original", None)
+
+    if isinstance(original, app_commands.TransformerError):
+        valor = str(original.value).strip().replace("`", "'")[:60]
+
+        if original.type == discord.AppCommandOptionType.user:
+            await ctx.reply(
+                f"Não consegui identificar o membro `{valor}`. Use a menção "
+                "**@** ou escolha a pessoa na lista do Discord."
+            )
+        elif original.type == discord.AppCommandOptionType.role:
+            await ctx.reply(
+                f"Não consegui identificar o cargo `{valor}`. Use a menção "
+                "do cargo ou escolha na lista do Discord."
+            )
+        else:
+            await ctx.reply(
+                f"Não consegui entender o valor `{valor}` que você enviou."
+            )
+        return
+
     print(f"Erro no comando {ctx.command}: {erro!r}")
     await ctx.reply(
         "Deu erro ao executar esse comando. Tente de novo mais tarde."
