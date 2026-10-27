@@ -22,4 +22,8 @@ testes/_log_*.txt
 
 # Mantidos apenas na máquina local (não vão para o repositório público)
 testes/
+AGENTS.md
+PLANO.md
+iniciar_bot.sh
+bob-bot.service
 

@@ -77,17 +77,8 @@ cp .env.example .env   # depois edite o .env e cole seu token
 ## Execução
 
 ```bash
-.venv/bin/python main.py     # primeiro plano (ver o log ao vivo)
-./iniciar_bot.sh             # em segundo plano (log em logs/bot.log)
-```
-
-Subir junto com o login (systemd de usuário):
-
-```bash
-cp bob-bot.service ~/.config/systemd/user/
-systemctl --user daemon-reload
-systemctl --user enable --now bob-bot
-journalctl --user -u bob-bot -f   # acompanhar o log
+.venv/bin/python main.py                            # primeiro plano (log na tela)
+nohup .venv/bin/python main.py >> bot.log 2>&1 &   # em segundo plano
 ```
 
 ## Estrutura
@@ -96,8 +87,6 @@ journalctl --user -u bob-bot -f   # acompanhar o log
 main.py           bot inteiro (ponto de entrada)
 imagens/          imagens enviadas pelo bot
 logs/             saída do bot, automod.json e estado (gitignored)
-iniciar_bot.sh    sobe o bot em segundo plano
-bob-bot.service   unidade systemd de usuário
 .env.example      modelo das variáveis de ambiente
 CHANGELOG.md      novidades (o /novidades lê este arquivo)
 ```
