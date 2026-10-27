@@ -1,0 +1,33 @@
+[Unit]
+# Sobe o BOB BOT junto com o login — equivalente ao atalho que ficava na
+# pasta Inicializar do Windows.
+#
+# Instalar (pasta do projeto em ~/Projetos/BOT-DISCORD):
+#   mkdir -p ~/.config/systemd/user
+#   cp bob-bot.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now bob-bot.service
+#
+# Ver o log:   journalctl --user -u bob-bot -f
+# Parar:       systemctl --user stop bob-bot
+#
+# %h = sua home. Se a pasta do projeto mudar, ajuste os caminhos abaixo.
+Description=BOB BOT (Discord)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Projetos/BOT-DISCORD
+# Com venv (recomendado no Arch/CachyOS):
+ExecStart=%h/Projetos/BOT-DISCORD/.venv/bin/python -u %h/Projetos/BOT-DISCORD/main.py
+# Sem venv, troque a linha acima por:
+#ExecStart=/usr/bin/python -u %h/Projetos/BOT-DISCORD/main.py
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONIOENCODING=utf-8
+# Se o bot cair (internet fora do ar, por exemplo), tenta de novo em 20s.
+Restart=on-failure
+RestartSec=20
+
+[Install]
+WantedBy=default.target
